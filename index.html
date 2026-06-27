@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>แบบฟอร์มลงทะเบียนผู้เข้าร่วมงาน KUVetMusic Workshop</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Sarabun', 'Noto Sans Thai', sans-serif;
+      background: #f5f5f3;
+      color: #1a1a18;
+      min-height: 100vh;
+      padding: 2rem 1rem;
+    }
+
+    .page { max-width: 660px; margin: 0 auto; }
+
+    /* Tab bar */
+    .tab-bar { display: flex; gap: 8px; margin-bottom: 1.5rem; }
+    .tab {
+      padding: 9px 20px;
+      border-radius: 8px;
+      border: 1px solid #ddddd8;
+      background: transparent;
+      color: #6b6b68;
+      cursor: pointer;
+      font-size: 14px;
+      font-family: inherit;
+      transition: background 0.15s;
+      display: flex; align-items: center; gap: 6px;
+    }
+    .tab.active { background: #fff; color: #1a1a18; border-color: #b0b0aa; font-weight: 500; }
+    .tab:hover:not(.active) { background: #ebebea; }
+
+    /* Card */
+    .card {
+      background: #fff;
+      border: 1px solid #ddddd8;
+      border-radius: 14px;
+      padding: 2rem;
+    }
+
+    /* Hero */
+    .hero { margin-bottom: 1.75rem; padding-bottom: 1.25rem; border-bottom: 1px solid #ebebea; }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 5px;
+      background: #e8f0fd; color: #2563c4;
+      font-size: 12px; font-weight: 500;
+      padding: 4px 12px; border-radius: 99px; margin-bottom: 12px;
+    }
+    .hero h1 { font-size: 20px; font-weight: 600; color: #1a1a18; margin-bottom: 6px; line-height: 1.4; }
+    .hero p { font-size: 14px; color: #6b6b68; line-height: 1.7; }
+
+    /* Section */
+    .section { margin-bottom: 1.75rem; }
+    .section-title {
+      font-size: 13px; font-weight: 600; color: #1a1a18;
+      background: #f5f5f3; border: 1px solid #ddddd8;
+      border-radius: 8px; padding: 8px 14px; margin-bottom: 1rem;
+    }
+
+    /* Fields */
+    .field { margin-bottom: 1rem; }
+    label { display: block; font-size: 13px; font-weight: 500; color: #6b6b68; margin-bottom: 6px; }
+    input {
+      width: 100%; font-family: inherit; font-size: 15px;
+      color: #1a1a18; background: #f5f5f3;
+      border: 1px solid #ddddd8; border-radius: 8px;
+      padding: 10px 12px; outline: none; transition: border-color 0.15s, box-shadow 0.15s;
+    }
+    input:focus { border-color: #4b82e8; box-shadow: 0 0 0 3px #dce8fc; }
+
+    /* Info box */
+    .info-box {
+      background: #e8f0fd; border: 1px solid #b8d0f5;
+      border-radius: 8px; padding: 10px 14px;
+      font-size: 13px; color: #2563c4; margin-bottom: 1rem;
+      display: flex; align-items: flex-start; gap: 7px;
+    }
+
+    /* Days */
+    .days-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin-bottom: 1rem; }
+    .day-btn {
+      padding: 10px 4px; border-radius: 8px;
+      border: 1px solid #ddddd8; background: transparent;
+      color: #6b6b68; cursor: pointer; font-size: 13px;
+      font-family: inherit; text-align: center;
+      transition: all 0.12s; line-height: 1.4;
+    }
+    .day-btn:hover:not(.disabled) { background: #f5f5f3; }
+    .day-btn.selected { background: #e8f0fd; border-color: #4b82e8; color: #2563c4; font-weight: 600; }
+    .day-btn.disabled { opacity: 0.35; cursor: not-allowed; }
+
+    /* Instrument sections */
+    .instrument-section {
+      background: #f5f5f3; border: 1px solid #ddddd8;
+      border-radius: 8px; padding: 1rem; margin-bottom: 10px;
+    }
+    .instrument-label {
+      font-size: 13px; font-weight: 600; color: #1a1a18;
+      margin-bottom: 10px; display: flex; align-items: center; gap: 7px;
+    }
+    .day-tag {
+      background: #e8f0fd; color: #2563c4;
+      font-size: 11px; padding: 2px 9px; border-radius: 99px; font-weight: 500;
+    }
+    .instruments-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 7px; }
+    .inst-btn {
+      padding: 10px 6px; border-radius: 8px;
+      border: 1px solid #ddddd8; background: #fff;
+      color: #6b6b68; cursor: pointer; font-size: 13px;
+      font-family: inherit; text-align: center;
+      transition: all 0.12s; display: flex; align-items: center;
+      justify-content: center; gap: 5px;
+    }
+    .inst-btn:hover { background: #ebebea; border-color: #b0b0aa; }
+    .inst-btn.selected { background: #e6f4ee; border-color: #4aaa78; color: #1a7a4a; font-weight: 600; }
+
+    /* Submit button */
+    .submit-btn {
+      width: 100%; padding: 13px;
+      background: #2563c4; color: #fff;
+      border: none; border-radius: 8px;
+      font-size: 15px; font-weight: 600;
+      font-family: inherit; cursor: pointer;
+      transition: background 0.15s; margin-top: 0.5rem;
+    }
+    .submit-btn:hover { background: #1d4f9e; }
+    .submit-btn:disabled { opacity: 0.45; cursor: not-allowed; }
+
+    /* Thank you screen */
+    .thankyou {
+      display: none; flex-direction: column;
+      align-items: center; text-align: center; padding: 2rem 1rem;
+    }
+    .ty-icon {
+      width: 68px; height: 68px; border-radius: 50%;
+      background: #e6f4ee; display: flex; align-items: center;
+      justify-content: center; margin: 0 auto 1.25rem; font-size: 36px;
+    }
+    .ty-title { font-size: 22px; font-weight: 700; color: #1a1a18; margin-bottom: 8px; }
+    .ty-sub { font-size: 15px; color: #6b6b68; line-height: 1.7; margin-bottom: 1.5rem; }
+    .ty-summary {
+      background: #f5f5f3; border: 1px solid #ddddd8;
+      border-radius: 10px; padding: 1rem 1.25rem;
+      width: 100%; text-align: left; margin-bottom: 1.5rem;
+    }
+    .ty-row {
+      display: flex; justify-content: space-between;
+      font-size: 13px; padding: 5px 0;
+      border-bottom: 1px solid #ebebea;
+    }
+    .ty-row:last-child { border-bottom: none; }
+    .ty-row .tl { color: #9b9b98; }
+    .ty-row .tv { color: #1a1a18; font-weight: 600; }
+    .ty-day-row { display: flex; align-items: center; gap: 8px; padding: 4px 0; }
+    .ty-day-lbl { color: #1a1a18; font-weight: 600; min-width: 70px; font-size: 13px; }
+    .inst-pill {
+      background: #e6f4ee; border: 1px solid #4aaa78;
+      color: #1a7a4a; font-size: 12px;
+      padding: 2px 10px; border-radius: 99px; font-weight: 500;
+    }
+    .back-btn {
+      background: transparent; border: 1px solid #b0b0aa;
+      color: #6b6b68; border-radius: 8px; padding: 9px 22px;
+      cursor: pointer; font-size: 14px; font-family: inherit;
+      transition: background 0.12s; display: flex; align-items: center; gap: 6px;
+    }
+    .back-btn:hover { background: #f5f5f3; }
+
+    /* Responses tab */
+    .responses-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.25rem; }
+    .responses-header h2 { font-size: 18px; font-weight: 600; color: #1a1a18; }
+    .badge {
+      background: #e8f0fd; color: #2563c4;
+      font-size: 12px; font-weight: 600;
+      padding: 3px 10px; border-radius: 99px; margin-left: 8px;
+    }
+    .clear-btn {
+      font-size: 13px; color: #c0392b;
+      background: none; border: none; cursor: pointer;
+      font-family: inherit; padding: 5px 10px; border-radius: 8px;
+    }
+    .clear-btn:hover { background: #fdecea; }
+    .empty-state { text-align: center; padding: 3rem 1rem; color: #9b9b98; font-size: 15px; }
+    .resp-item {
+      background: #fff; border: 1px solid #ddddd8;
+      border-radius: 10px; padding: 1rem 1.25rem; margin-bottom: 10px;
+    }
+    .resp-top { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
+    .avatar {
+      width: 40px; height: 40px; border-radius: 50%;
+      background: #e8f0fd; display: flex; align-items: center;
+      justify-content: center; font-weight: 700; font-size: 14px;
+      color: #2563c4; flex-shrink: 0;
+    }
+    .resp-name { font-size: 15px; font-weight: 600; color: #1a1a18; }
+    .resp-sub { font-size: 13px; color: #9b9b98; margin-top: 1px; }
+    .resp-time { font-size: 12px; color: #9b9b98; margin-left: auto; white-space: nowrap; }
+    .day-rows { display: flex; flex-direction: column; gap: 5px; margin-top: 4px; }
+    .day-row { display: flex; align-items: center; gap: 8px; font-size: 13px; }
+    .day-row .dl { font-weight: 600; color: #1a1a18; min-width: 78px; }
+
+    #view-responses { display: none; }
+
+    @media (max-width: 480px) {
+      .days-grid { grid-template-columns: repeat(3, 1fr); }
+      .instruments-grid { grid-template-columns: repeat(2, 1fr); }
+      .card { padding: 1.25rem; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="page">
+  <div class="tab-bar">
+    <button class="tab active" onclick="showTab('form')">📋 กรอกแบบฟอร์ม</button>
+    <button class="tab" onclick="showTab('responses')">👥 รายชื่อผู้ลงทะเบียน</button>
+  </div>
+
+  <!-- FORM TAB -->
+  <div id="view-form">
+    <div class="card">
+
+      <!-- Form content -->
+      <div id="formContent">
+        <div class="hero">
+          <div class="hero-badge">🎵 KU Vet Music</div>
+          <h1>แบบฟอร์มลงทะเบียนผู้เข้าร่วมงาน<br>KUVetMusic Workshop</h1>
+          <p>กรุณากรอกข้อมูลให้ครบถ้วน เลือกวันเข้าร่วมได้สูงสุด 2 วัน และเลือกเครื่องดนตรี 1 ชิ้นต่อวัน</p>
+        </div>
+
+        <!-- Section 1 -->
+        <div class="section">
+          <div class="section-title">ส่วนที่ 1 — ข้อมูลส่วนตัวผู้ตอบแบบสอบถาม</div>
+          <div class="field">
+            <label for="fullname">1. ชื่อ - นามสกุล</label>
+            <input type="text" id="fullname" placeholder="สมชาย ใจดี" />
+          </div>
+          <div class="field">
+            <label for="nickname">2. ชื่อเล่น</label>
+            <input type="text" id="nickname" placeholder="ชาย" />
+          </div>
+          <div class="field">
+            <label for="studentid">3. รหัสนิสิต</label>
+            <input type="text" id="studentid" placeholder="65XXXXXXXX" maxlength="10" />
+          </div>
+        </div>
+
+        <!-- Section 2 & 3 -->
+        <div class="section">
+          <div class="section-title">ส่วนที่ 2 & 3 — วันที่เข้าร่วมและเครื่องดนตรี</div>
+          <div class="info-box">
+            ℹ️ เลือกวันที่เข้าร่วมได้ <strong>สูงสุด 2 วัน</strong> และเลือกเครื่องดนตรีได้ <strong>1 ชิ้นต่อวัน</strong>
+          </div>
+          <div class="days-grid" id="daysGrid"></div>
+          <div id="instrumentSections"></div>
+        </div>
+
+        <button class="submit-btn" id="submitBtn" onclick="submitForm()">ส่งแบบฟอร์ม</button>
+      </div>
+
+      <!-- Thank you screen -->
+      <div class="thankyou" id="thankyouContent">
+        <div class="ty-icon">✅</div>
+        <div class="ty-title">ขอบคุณที่ลงทะเบียน!</div>
+        <div class="ty-sub">ทางทีม KUVetMusic Workshop ได้รับข้อมูลของคุณเรียบร้อยแล้ว<br>เราตั้งตารอพบคุณในงานครับ/ค่ะ 🎵</div>
+        <div class="ty-summary" id="tySummary"></div>
+        <button class="back-btn" onclick="resetForm()">← ลงทะเบียนอีกครั้ง</button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- RESPONSES TAB -->
+  <div id="view-responses">
+    <div class="responses-header">
+      <h2>รายชื่อผู้ลงทะเบียน <span class="badge" id="countBadge">0</span></h2>
+      <button class="clear-btn" onclick="clearAll()">🗑 ลบทั้งหมด</button>
+    </div>
+    <div id="respList"></div>
+  </div>
+</div>
+
+<script>
+  // ======================================================
+  // 🔧 วางลิงก์ Google Apps Script Web App URL ตรงนี้
+  // ======================================================
+  const APPS_SCRIPT_URL = 'YOUR_APPS_SCRIPT_WEB_APP_URL';
+  // ======================================================
+
+  const DAYS = [
+    { label: '13 ก.ค.', full: 'วันที่ 13 ก.ค.' },
+    { label: '14 ก.ค.', full: 'วันที่ 14 ก.ค.' },
+    { label: '15 ก.ค.', full: 'วันที่ 15 ก.ค.' },
+    { label: '16 ก.ค.', full: 'วันที่ 16 ก.ค.' },
+    { label: '17 ก.ค.', full: 'วันที่ 17 ก.ค.' },
+  ];
+  const INSTRUMENTS = [
+    { id: 'sing',     label: 'ร้องเพลง', icon: '🎤' },
+    { id: 'guitar',   label: 'กีตาร์',   icon: '🎸' },
+    { id: 'keyboard', label: 'คีย์บอร์ด', icon: '🎹' },
+    { id: 'bass',     label: 'เบส',      icon: '🎵' },
+    { id: 'drum',     label: 'กลอง',     icon: '🥁' },
+    { id: 'cajon',    label: 'คาฮอง',    icon: '📦' },
+  ];
+
+  let selectedDays = [];
+  let selectedInstruments = {};
+  let responses = [];
+
+  // Load from localStorage
+  function load() {
+    try {
+      const saved = localStorage.getItem('kuvetmusic_responses');
+      if (saved) responses = JSON.parse(saved);
+    } catch(e) { responses = []; }
+  }
+
+  function save() {
+    try { localStorage.setItem('kuvetmusic_responses', JSON.stringify(responses)); } catch(e) {}
+  }
+
+  function renderDays() {
+    document.getElementById('daysGrid').innerHTML = DAYS.map((d, i) => {
+      const isSel = selectedDays.includes(i);
+      const isDis = !isSel && selectedDays.length >= 2;
+      return `<button class="day-btn${isSel?' selected':''}${isDis?' disabled':''}" onclick="toggleDay(${i})">${d.label}</button>`;
+    }).join('');
+  }
+
+  function renderInstrumentSections() {
+    const container = document.getElementById('instrumentSections');
+    if (!selectedDays.length) { container.innerHTML = ''; return; }
+    container.innerHTML = selectedDays.map(di => {
+      const chosen = selectedInstruments[di];
+      return `<div class="instrument-section">
+        <div class="instrument-label">
+          🎼 เลือกเครื่องดนตรี <span class="day-tag">${DAYS[di].label}</span>
+        </div>
+        <div class="instruments-grid">
+          ${INSTRUMENTS.map(inst => `
+            <button class="inst-btn${chosen===inst.id?' selected':''}" onclick="selectInstrument(${di},'${inst.id}')">
+              ${inst.icon} ${inst.label}
+            </button>`).join('')}
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  function toggleDay(i) {
+    if (selectedDays.includes(i)) {
+      selectedDays = selectedDays.filter(d => d !== i);
+      delete selectedInstruments[i];
+    } else {
+      if (selectedDays.length >= 2) return;
+      selectedDays.push(i);
+      selectedDays.sort((a,b) => a-b);
+    }
+    renderDays();
+    renderInstrumentSections();
+  }
+
+  function selectInstrument(dayIdx, instId) {
+    selectedInstruments[dayIdx] = instId;
+    renderInstrumentSections();
+  }
+
+  function v(id) { return document.getElementById(id).value.trim(); }
+  function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+  async function submitForm() {
+    const fullname = v('fullname'), nickname = v('nickname'), studentid = v('studentid');
+    if (!fullname || !nickname || !studentid) { alert('กรุณากรอกข้อมูลส่วนตัวให้ครบถ้วน'); return; }
+    if (!selectedDays.length) { alert('กรุณาเลือกวันที่เข้าร่วมอย่างน้อย 1 วัน'); return; }
+    for (const di of selectedDays) {
+      if (!selectedInstruments[di]) { alert(`กรุณาเลือกเครื่องดนตรีสำหรับ${DAYS[di].full}`); return; }
+    }
+
+    const btn = document.getElementById('submitBtn');
+    btn.disabled = true; btn.textContent = 'กำลังส่ง…';
+
+    const daysSummary = selectedDays.map(di => ({
+      day: DAYS[di].label,
+      instrument: INSTRUMENTS.find(i => i.id === selectedInstruments[di])?.label,
+      icon: INSTRUMENTS.find(i => i.id === selectedInstruments[di])?.icon
+    }));
+
+    // ส่งข้อมูลไปยัง Google Sheets
+    try {
+      const payload = {
+        fullname,
+        nickname,
+        studentid,
+        days: daysSummary.map(d => d.day).join(', '),
+        instruments: daysSummary.map(d => d.instrument).join(', '),
+        timestamp: new Date().toISOString()
+      };
+
+      await fetch(APPS_SCRIPT_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+    } catch (err) {
+      console.error('ส่งข้อมูลไม่สำเร็จ:', err);
+      // แสดงหน้า thank you ต่อแม้ส่งไม่สำเร็จ เพื่อ UX ที่ดี
+    }
+
+    responses.unshift({ fullname, nickname, studentid, days: daysSummary, time: new Date().toISOString() });
+    save();
+
+    document.getElementById('tySummary').innerHTML = `
+      <div class="ty-row"><span class="tl">ชื่อ - นามสกุล</span><span class="tv">${esc(fullname)}</span></div>
+      <div class="ty-row"><span class="tl">ชื่อเล่น</span><span class="tv">${esc(nickname)}</span></div>
+      <div class="ty-row"><span class="tl">รหัสนิสิต</span><span class="tv">${esc(studentid)}</span></div>
+      <div style="margin-top:10px">
+        ${daysSummary.map(d=>`
+          <div class="ty-day-row">
+            <span class="ty-day-lbl">${esc(d.day)}</span>
+            <span class="inst-pill">${d.icon} ${esc(d.instrument)}</span>
+          </div>`).join('')}
+      </div>`;
+
+    document.getElementById('formContent').style.display = 'none';
+    document.getElementById('thankyouContent').style.display = 'flex';
+    btn.disabled = false; btn.textContent = 'ส่งแบบฟอร์ม';
+  }
+
+  function resetForm() {
+    ['fullname','nickname','studentid'].forEach(id => document.getElementById(id).value = '');
+    selectedDays = []; selectedInstruments = {};
+    renderDays(); renderInstrumentSections();
+    document.getElementById('formContent').style.display = '';
+    document.getElementById('thankyouContent').style.display = 'none';
+  }
+
+  function showTab(t) {
+    document.querySelectorAll('.tab').forEach((el,i) => el.classList.toggle('active',(i===0)===(t==='form')));
+    document.getElementById('view-form').style.display = t==='form' ? '' : 'none';
+    document.getElementById('view-responses').style.display = t==='responses' ? '' : 'none';
+    if (t==='responses') renderResponses();
+  }
+
+  function fmtTime(iso) {
+    const d = new Date(iso);
+    return d.toLocaleDateString('th-TH',{day:'numeric',month:'short',year:'numeric'}) + ' ' +
+           d.toLocaleTimeString('th-TH',{hour:'2-digit',minute:'2-digit'});
+  }
+
+  function renderResponses() {
+    const list = document.getElementById('respList');
+    document.getElementById('countBadge').textContent = responses.length;
+    if (!responses.length) {
+      list.innerHTML = '<div class="empty-state">🎵 ยังไม่มีผู้ลงทะเบียน</div>';
+      return;
+    }
+    list.innerHTML = responses.map(r => `
+      <div class="resp-item">
+        <div class="resp-top">
+          <div class="avatar">${esc(r.fullname[0]||'?')}</div>
+          <div>
+            <div class="resp-name">${esc(r.fullname)} <span style="font-weight:400;color:#9b9b98">(${esc(r.nickname)})</span></div>
+            <div class="resp-sub">รหัสนิสิต: ${esc(r.studentid)}</div>
+          </div>
+          <span class="resp-time">${fmtTime(r.time)}</span>
+        </div>
+        <div class="day-rows">
+          ${r.days.map(d=>`<div class="day-row"><span class="dl">${esc(d.day)}</span><span class="inst-pill">${d.icon||'🎵'} ${esc(d.instrument)}</span></div>`).join('')}
+        </div>
+      </div>`).join('');
+  }
+
+  function clearAll() {
+    if (!confirm('ต้องการลบข้อมูลทั้งหมดหรือไม่?')) return;
+    responses = []; save(); renderResponses();
+  }
+
+  load();
+  renderDays();
+</script>
+</body>
+</html>
