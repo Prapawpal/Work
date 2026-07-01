@@ -135,14 +135,14 @@
 </div>
 
 <script>
-  const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzElCR8b_zwBPFUY9uYkWh4h4I54GOgyMp0jAsRUXpCQwIzWmeS9RkLvA-jO-qp5rX1/exec';
+  const APPS_SCRIPT_URL = 'YOUR_APPS_SCRIPT_WEB_APP_URL';
 
   const DAYS = [
-    { label: '13 ก.ค.', full: 'วันที่ 13 ก.ค.' },
-    { label: '14 ก.ค.', full: 'วันที่ 14 ก.ค.' },
-    { label: '15 ก.ค.', full: 'วันที่ 15 ก.ค.' },
-    { label: '16 ก.ค.', full: 'วันที่ 16 ก.ค.' },
-    { label: '17 ก.ค.', full: 'วันที่ 17 ก.ค.' },
+    { label: '13 ก.ค.', full: 'วันที่ 13 ก.ค.', song: 'อยู่บำรุง', artist: 'ว่าน ธนกฤต' },
+    { label: '14 ก.ค.', full: 'วันที่ 14 ก.ค.', song: 'ฤดูร้อน', artist: 'PARADOX' },
+    { label: '15 ก.ค.', full: 'วันที่ 15 ก.ค.', song: 'สองรัก', artist: 'ZEAL' },
+    { label: '16 ก.ค.', full: 'วันที่ 16 ก.ค.', song: 'ร8w', artist: 'GENE KASIDIT' },
+    { label: '17 ก.ค.', full: 'วันที่ 17 ก.ค.', song: 'อมพระมาพูด', artist: 'เสก โลโซ' },
   ];
 
   const CAPACITY = { sing: 6, guitar: 6, keyboard: 3, bass: 4, drum: 2, cajon: 2 };
@@ -214,7 +214,7 @@
     document.getElementById('daysGrid').innerHTML = DAYS.map((d, i) => {
       const isSel = selectedDays.includes(i);
       const isDis = !isSel && selectedDays.length >= 2;
-      return `<button class="day-btn${isSel?' selected':''}${isDis?' disabled':''}" onclick="toggleDay(${i})">${d.label}</button>`;
+      return `<button class="day-btn${isSel?' selected':''}${isDis?' disabled':''}" onclick="toggleDay(${i})"><div style="font-weight:600">${d.label}</div><div style="font-size:11px;margin-top:2px;opacity:0.85">🎵 ${d.song}</div><div style="font-size:10px;margin-top:1px;opacity:0.65">${d.artist}</div></button>`;
     }).join('');
   }
 
@@ -233,7 +233,7 @@
       const chosen = selectedInstruments[di];
       const dayLabel = DAYS[di].label;
       return `<div class="instrument-section">
-        <div class="instrument-label">🎼 เลือกเครื่องดนตรี <span class="day-tag">${dayLabel}</span></div>
+        <div class="instrument-label">🎼 เลือกเครื่องดนตรี <span class="day-tag">${dayLabel}</span> <span style="font-size:12px;color:#6b6b68;font-weight:400">🎵 ${DAYS[di].song} — ${DAYS[di].artist}</span></div>
         <div class="instruments-grid">
           ${INSTRUMENTS.map(inst => {
             const used = getCount(dayLabel, inst.id);
@@ -285,6 +285,8 @@
 
     const daysSummary = selectedDays.map(di => ({
       day: DAYS[di].label,
+      song: DAYS[di].song,
+      artist: DAYS[di].artist,
       instrument: INSTRUMENTS.find(i => i.id === selectedInstruments[di])?.label,
       icon: INSTRUMENTS.find(i => i.id === selectedInstruments[di])?.icon,
       instId: selectedInstruments[di]
@@ -318,7 +320,7 @@
       '<div class="ty-row"><span class="tl">ชื่อเล่น</span><span class="tv">' + esc(nickname) + '</span></div>' +
       '<div class="ty-row"><span class="tl">รหัสนิสิต</span><span class="tv">' + esc(studentid) + '</span></div>' +
       '<div style="margin-top:10px">' + daysSummary.map(d =>
-        '<div class="ty-day-row"><span class="ty-day-lbl">' + esc(d.day) + '</span><span class="inst-pill">' + d.icon + ' ' + esc(d.instrument) + '</span></div>'
+        '<div class="ty-day-row"><span class="ty-day-lbl">' + esc(d.day) + '</span><span style="font-size:12px;color:#6b6b68;margin-right:6px">🎵 ' + esc(d.song) + ' — ' + esc(d.artist) + '</span><span class="inst-pill">' + d.icon + ' ' + esc(d.instrument) + '</span></div>'
       ).join('') + '</div>';
 
     document.getElementById('formContent').style.display = 'none';
