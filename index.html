@@ -49,6 +49,8 @@ input:focus-visible,select:focus-visible,textarea:focus-visible,button:focus-vis
 .prod img{width:100%;max-width:150px;height:140px;object-fit:contain}
 .prod b{display:block;font-weight:600;margin-top:4px}
 .sub{color:var(--muted);font-size:15px;margin:-6px 0 12px}
+.sz{display:block;color:var(--muted);font-size:14px;line-height:1.4;margin-top:2px}
+.sz2{display:block;color:var(--muted);font-size:14px;font-weight:400}
 .row{display:flex;align-items:center;gap:12px;padding:10px 0;border-top:1px solid var(--line)}
 .row:first-of-type{border-top:0}
 .row img{width:56px;height:56px;object-fit:contain;flex:none}
@@ -76,7 +78,7 @@ footer{text-align:center;color:var(--muted);padding:10px 0 30px;font-size:15px}
 <header class="hero"><div class="wrap">
   <h1>VETMUSIC<br>MERCHANDISE</h1>
   <div class="fan" id="fan" aria-hidden="true"></div>
-  <p>พวงกุญแจปิ๊กกีต้าร์และสติกเกอร์จากชมรมดนตรีสัตวแพทย์ กรอกข้อมูลแล้วสั่งได้เลย</p>
+  <p>พวงกุญแจปิ๊กกีต้าร์และสติกเกอร์จากชุมนุมดนตรีสัตวแพทยศาสตร์ มหาวิทยาลัยเกษตรศาสตร์ กรอกข้อมูลแล้วสั่งได้เลย</p>
   <a class="cta" href="#order">สั่งซื้อเลย</a>
 </div></header>
 <nav><div class="wrap"><a href="#info">ข้อมูล</a><a href="#products">สินค้า</a><a href="#order">สั่งซื้อ</a><a href="#pickup">รับสินค้า</a><a href="#pay">ชำระเงิน</a></div></nav>
@@ -104,7 +106,7 @@ footer{text-align:center;color:var(--muted);padding:10px 0 30px;font-size:15px}
 <section id="products"><div class="wrap">
   <h2>สินค้า</h2>
   <h3 style="margin-bottom:10px">พวงกุญแจปิ๊กกีต้าร์</h3>
-  <p class="sub">รูปแบบที่ 1 มี 4 ลาย</p>
+  <p class="sub">รูปแบบที่ 1 มี 4 ลาย · ปิ๊กทั้ง 2 รูปแบบขนาด 2.5 × 3 ซม. หนา 0.71 มม.</p>
   <div class="grid" id="pg-k1"></div>
   <p class="sub" style="margin-top:16px">รูปแบบที่ 2</p>
   <div class="grid" id="pg-k2"></div>
@@ -171,14 +173,19 @@ ITEMS.push({id:'k2',group:'k2',type:'keychain',name:'รูปแบบที่
 [1,2,3,4].forEach(function(n,i){ITEMS.push({id:'s-'+n,group:'s',type:'sticker',name:'ลาย'+n,label:'สติกเกอร์ ลาย'+n,full:'สติกเกอร์ ลาย'+n,color:'',motif:''});});
 
 var $=function(id){return document.getElementById(id)};
+var META={'s-1':['3.8 × 5 ซม.'],'s-2':['5.6 × 5 ซม.'],'s-3':['3.4 × 5 ซม.'],'s-4':['5 × 5 ซม.']};
+ITEMS.forEach(function(it){var m=META[it.id]||[];it.size=m[0]||'';it.price=m[1]||0;});
 $('fan').innerHTML=ITEMS.slice(0,4).map(function(it){return '<img src="'+IMGS[it.id]+'" alt="">'}).join('');
 var qty={};
 ITEMS.forEach(function(it){
   qty[it.id]=0;
-  $('pg-'+it.group).insertAdjacentHTML('beforeend','<div class="prod">'+art(it)+'<b>'+it.name+'</b></div>');
-  $('o-'+it.group).insertAdjacentHTML('beforeend','<div class="row">'+art(it)+'<span class="n">'+it.name+'</span><span class="qty"><button type="button" data-id="'+it.id+'" data-d="-1" aria-label="ลด '+it.full+'">−</button><output id="q-'+it.id+'" aria-live="polite">0</output><button type="button" data-id="'+it.id+'" data-d="1" aria-label="เพิ่ม '+it.full+'">+</button></span></div>');
+  $('pg-'+it.group).insertAdjacentHTML('beforeend','<div class="prod">'+art(it)+'<b>'+it.name+'</b>'+(it.type==='sticker'?'<span class="sz">'+it.size+'</span>':'')+'</div>');
+  $('o-'+it.group).insertAdjacentHTML('beforeend','<div class="row">'+art(it)+'<span class="n">'+it.name+(it.type==='sticker'?'<small class="sz2">'+it.size+'</small>':'')+'</span><span class="qty"><button type="button" data-id="'+it.id+'" data-d="-1" aria-label="ลด '+it.full+'">−</button><output id="q-'+it.id+'" aria-live="polite">0</output><button type="button" data-id="'+it.id+'" data-d="1" aria-label="เพิ่ม '+it.full+'">+</button></span></div>');
 });
 function total(){return ITEMS.reduce(function(a,it){return a+qty[it.id]},0)}
+function money(){return ITEMS.reduce(function(a,it){return a+qty[it.id]*it.price},0)}
+function unpriced(){return ITEMS.some(function(it){return qty[it.id]>0&&!it.price})}
+function moneyText(){return money()+' บาท'+(unpriced()?' (ยังไม่รวมพวงกุญแจ ราคาแจ้งภายหลัง)':'')}
 document.addEventListener('click',function(e){
   var b=e.target.closest('button[data-id]');if(!b)return;
   var id=b.dataset.id,v=Math.max(0,Math.min(99,qty[id]+Number(b.dataset.d)));
